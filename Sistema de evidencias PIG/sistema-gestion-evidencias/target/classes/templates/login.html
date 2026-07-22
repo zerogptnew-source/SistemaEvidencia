@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Acceso al Sistema - Gestión de Evidencias</title>
+    <link rel="stylesheet" th:href="@{/estilo.css}">
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Control de Acceso al Sistema</h2>
+        <p>Sistema de Gestión de Evidencias de Capacitación</p>
+
+        <!-- Mensaje de error si la clave es incorrecta -->
+        <div th:if="${error}" class="alert-error" th:text="${error}"></div>
+
+        <form th:action="@{/login}" method="post">
+            <div>
+                <label>Usuario:</label>
+                <input type="text" name="usuario" placeholder="Ingrese su usuario" required />
+            </div>
+            <div>
+                <label>Contraseña:</label>
+                <input type="password" name="password" placeholder="Ingrese su contraseña" required />
+            </div>
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+    </div>
+
+</body>
+</html>

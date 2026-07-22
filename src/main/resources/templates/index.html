@@ -7,75 +7,126 @@
 </head>
 <body>
 
-    <h1>Sistema de Gestión de Evidencias - Prevención de Ingeniería Social</h1>
+    <!-- Barra Superior con Botón de Salir -->
+    <div class="header-bar">
+        <h1>Sistema de Gestión de Evidencias - Prevención de Ingeniería Social</h1>
+        <a th:href="@{/logout}" class="btn-logout">Cerrar Sesión</a>
+    </div>
 
-    <!-- Formulario para guardar una evidencia -->
+    <!-- Formulario para Registrar Evidencias Pedagógicas del Taller -->
     <h2>Registrar Nueva Evidencia del Taller</h2>
-    <form th:action="@{/guardar}" th:object="${nuevaEvidencia}" method="post">
+    <form th:action="@{/guardar}" th:object="${nuevaEvidencia}" method="post" class="no-print">
         <div>
             <label>Título de la Evidencia:</label>
-            <input type="text" th:field="*{titulo}" placeholder="Ej: Evaluación de Diagnóstico sobre Phishing" required />
+            <input type="text" th:field="*{titulo}" placeholder="Ej: Registro de Asistencia del Taller de Phishing" required />
         </div>
+        
+        <div>
+            <label>Ubicación (Cantón de Los Ríos):</label>
+            <select th:field="*{cantonLosRios}" required>
+                <option value="" disabled selected>-- Seleccione el Cantón --</option>
+                <option value="Babahoyo">Babahoyo</option>
+                <option value="Vinces">Vinces</option>
+                <option value="Quevedo">Quevedo</option>
+                <option value="Ventanas">Ventanas</option>
+                <option value="Puebloviejo">Puebloviejo</option>
+                <option value="Mocache">Mocache</option>
+                <option value="Otros Cantones de Los Ríos">Otros Cantones de Los Ríos</option>
+            </select>
+        </div>
+
         <div>
             <label>Módulo de Seguridad Informática:</label>
             <select th:field="*{moduloSeguridad}" required>
-                <option value="" disabled selected>-- Seleccione un módulo --</option>
+                <option value="" disabled selected>-- Seleccione el módulo del taller --</option>
                 <option value="Phishing y Correo Fraudulento">Phishing y Correo Fraudulento</option>
                 <option value="Vishing y Llamadas Engañosas">Vishing y Llamadas Engañosas</option>
                 <option value="Smishing y Mensajería SMS/WhatsApp">Smishing y Mensajería SMS/WhatsApp</option>
                 <option value="Gestión de Contraseñas y Autenticación">Gestión de Contraseñas y Autenticación</option>
-                <option value="Ingeniería Social en Redes Sociales">Ingeniería Social en Redes Sociales</option>
             </select>
         </div>
+
         <div>
-            <label>Categoría del Entregable:</label>
+            <label>Categoría de Evidencia Pedagógica:</label>
             <select th:field="*{categoria}" required>
-                <option value="" disabled selected>-- Seleccione tipo de evidencia --</option>
-                <option value="Evaluación / Test">Evaluación / Test</option>
-                <option value="Material Preventivo / Infografía">Material Preventivo / Infografía</option>
+                <option value="" disabled selected>-- Seleccione según requerimiento --</option>
                 <option value="Registro de Asistencia">Registro de Asistencia</option>
-                <option value="Taller Práctico / Simulación">Taller Práctico / Simulación</option>
-                <option value="Encuesta de Satisfacción">Encuesta de Satisfacción</option>
+                <option value="Encuesta de Diagnóstico / Satisfacción">Encuesta de Diagnóstico / Satisfacción</option>
+                <option value="Nota / Examen Técnico">Nota / Examen Técnico</option>
+                <option value="Fotografía Documental del Evento">Fotografía Documental del Evento</option>
+                <option value="Material Didáctico del Taller">Material Didáctico del Taller</option>
             </select>
         </div>
+
+        <div>
+            <label>Detalle Pedagógico (Asistencia / Nota / Resultado):</label>
+            <input type="text" th:field="*{detallePedagogico}" placeholder="Ej: 30 Participantes / Nota Promedio 18/20" required />
+        </div>
+
         <div>
             <label>Descripción:</label>
-            <input type="text" th:field="*{descripcion}" placeholder="Ej: Medición inicial de conocimientos en la Provincia de Los Ríos" required />
+            <input type="text" th:field="*{descripcion}" placeholder="Ej: Evaluación inicial de conocimientos sobre ingeniería social" required />
         </div>
+
         <div>
             <label>URL del Archivo en la Nube:</label>
             <input type="text" th:field="*{urlArchivo}" placeholder="Ej: https://drive.google.com/..." required />
         </div>
+
         <button type="submit">Guardar Evidencia</button>
     </form>
 
-    <!-- Tabla para listar las evidencias -->
-    <h2>Evidencias Registradas</h2>
+    <hr class="no-print">
+
+    <!-- Sección de Consulta / Filtro por Categoría y Generación de Reportes -->
+    <div class="filter-section no-print">
+        <h2>Consulta y Filtro de Evidencias</h2>
+        <form th:action="@{/}" method="get" style="box-shadow:none; padding:0; background:none;">
+            <label>Filtrar por Categoría:</label>
+            <select name="categoria" onchange="this.form.submit()">
+                <option value="">-- Ver Todas --</option>
+                <option value="Registro de Asistencia" th:selected="${categoriaSeleccionada == 'Registro de Asistencia'}">Registro de Asistencia</option>
+                <option value="Encuesta de Diagnóstico / Satisfacción" th:selected="${categoriaSeleccionada == 'Encuesta de Diagnóstico / Satisfacción'}">Encuestas</option>
+                <option value="Nota / Examen Técnico" th:selected="${categoriaSeleccionada == 'Nota / Examen Técnico'}">Notas / Exámenes</option>
+                <option value="Fotografía Documental del Evento" th:selected="${categoriaSeleccionada == 'Fotografía Documental del Evento'}">Fotografías de Eventos</option>
+                <option value="Material Didáctico del Taller" th:selected="${categoriaSeleccionada == 'Material Didáctico del Taller'}">Material Didáctico</option>
+            </select>
+        </form>
+        <br>
+        <button onclick="window.print()" style="background-color:#17a2b8;">Generar Reporte (Imprimir / Guardar PDF)</button>
+    </div>
+
+    <!-- Tabla con el Reporte de Evidencias Registradas -->
+    <h2>Reporte de Evidencias Registradas</h2>
     <table>
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Fecha</th>
+                <th>Cantón</th>
                 <th>Título</th>
                 <th>Módulo</th>
                 <th>Categoría</th>
+                <th>Detalle</th>
                 <th>Descripción</th>
                 <th>Enlace</th>
-                <th>Acción</th>
+                <th class="no-print">Acción</th>
             </tr>
         </thead>
         <tbody>
             <tr th:each="item : ${evidencias}">
                 <td th:text="${item.id}">1</td>
-                <td th:text="${item.fechaRegistro}">2026-07-19</td>
+                <td th:text="${item.fechaRegistro}">2026-07-21</td>
+                <td th:text="${item.cantonLosRios}">Vinces</td>
                 <td th:text="${item.titulo}">Título</td>
                 <td th:text="${item.moduloSeguridad}">Módulo</td>
                 <td th:text="${item.categoria}">Categoría</td>
+                <td th:text="${item.detallePedagogico}">Detalle</td>
                 <td th:text="${item.descripcion}">Descripción</td>
                 <td>
                     <a th:href="${item.urlArchivo}" target="_blank">Ver Enlace</a>
                 </td>
-                <td>
+                <td class="no-print">
                     <a th:href="@{/eliminar/{id}(id=${item.id})}" class="btn-danger" 
                        onclick="return confirm('¿Seguro que deseas eliminar esta evidencia?');">Eliminar</a>
                 </td>
